@@ -1,0 +1,9 @@
+resources:
+  - deployment_n8n.yaml
+  - service_n8n.yaml
+  - persistentvolumeclaim_n8n-app-data.yaml
+  - deployment_postgres.yaml
+  - service_postgres.yaml
+  - persistentvolumeclaim_n8n-db-data.yaml
+  - configmap_n8n-db-init.yaml
+

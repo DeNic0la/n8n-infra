@@ -1,0 +1,25 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: n8n-public
+  namespace: n8n
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-issuer
+    cert-manager.io/common-name: n8n.denic0la.ch
+spec:
+  ingressClassName: nginx
+  rules:
+    - http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: n8n
+                port:
+                  number: 5678
+      host: n8n.denic0la.ch
+  tls:
+    - hosts:
+        - n8n.denic0la.ch
+      secretName: n8n-server-tls

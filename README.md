@@ -1,2 +1,4 @@
 # n8n-infra
-Based on https://github.com/n8n-io/n8n-hosting 
+
+This repository contains Infrastructure-as-Code (IaC) using Kustomize to deploy n8n and PostgreSQL on Kubernetes. 
+

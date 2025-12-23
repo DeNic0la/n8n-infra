@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    service: n8n-db
+    service.kubernetes.io/service-name: "n8n-db"
+  name: postgres
+spec:
+  internalTrafficPolicy: Cluster
+  clusterIP: None
+  ports:
+    - name: "5432"
+      port: 5432
+      targetPort: 5432
+  selector:
+    service: n8n-db

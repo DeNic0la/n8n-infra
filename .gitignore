@@ -1,0 +1,3 @@
+.idea
+secret_*.yaml
+**/secret_*.yaml

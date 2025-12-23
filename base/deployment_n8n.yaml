@@ -1,0 +1,77 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    service: n8n-app
+  name: n8n
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      service: n8n-app
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        service: n8n-app
+    spec:
+      initContainers:
+        - name: volume-permissions
+          image: busybox:1.36
+          command: ["sh", "-c", "chown 1000:1000 /data"]
+          volumeMounts:
+            - name: n8n-app-data
+              mountPath: /data
+      containers:
+        - command:
+            - /bin/sh
+          args:
+            - -c
+            - sleep 5; n8n start
+          env:
+            - name: DB_TYPE
+              value: postgresdb
+            - name: DB_POSTGRESDB_HOST
+              value: postgres
+            - name: DB_POSTGRESDB_PORT
+              value: "5432"
+            - name: DB_POSTGRESDB_DATABASE
+              valueFrom:
+                secretKeyRef:
+                  name: n8n-db-secrets
+                  key: DB_NAME
+            - name: DB_POSTGRESDB_USER
+              valueFrom:
+                secretKeyRef:
+                  name: n8n-db-secrets
+                  key: DB_USER
+            - name: DB_POSTGRESDB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: n8n-db-secrets
+                  key: DB_PASSWORD
+            - name: N8N_PROTOCOL
+              value: http
+            - name: N8N_PORT
+              value: "5678"
+          image: n8nio/n8n
+          name: n8n
+          ports:
+            - containerPort: 5678
+          resources:
+            requests:
+              memory: "250Mi"
+            limits:
+              memory: "500Mi"
+          volumeMounts:
+            - mountPath: /home/node/.n8n
+              name: n8n-app-data
+      restartPolicy: Always
+      volumes:
+        - name: n8n-app-data
+          persistentVolumeClaim:
+            claimName: n8n-app-data
+        - name: db-secrets
+          secret:
+            secretName: n8n-db-secrets

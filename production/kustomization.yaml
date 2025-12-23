@@ -1,0 +1,6 @@
+namespace: n8n
+
+resources:
+  - ../base
+  - sealedsecret_n8n-db.yaml
+  - ingress_n8n-public.yaml

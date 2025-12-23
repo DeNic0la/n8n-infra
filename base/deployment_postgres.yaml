@@ -1,0 +1,83 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    service: n8n-db
+  name: postgres
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      service: n8n-db
+  strategy:
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        service: n8n-db
+    spec:
+      containers:
+        - image: postgres:11
+          name: postgres
+          resources:
+            limits:
+              cpu: "4"
+              memory: 4Gi
+            requests:
+              cpu: 400Mi
+              memory: 500Mi
+          ports:
+            - containerPort: 5432
+          volumeMounts:
+            - name: n8n-db-data
+              mountPath: /var/lib/postgresql/data
+            - name: n8n-db-init
+              mountPath: /docker-entrypoint-initdb.d/init-n8n-user.sh
+              subPath: init-data.sh
+          env:
+            - name: PGDATA
+              value: /var/lib/postgresql/data/pgdata
+            - name: POSTGRES_USER
+              valueFrom:
+                secretKeyRef:
+                  name: n8n-db-secrets
+                  key: DB_ADMIN_USER
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: n8n-db-secrets
+                  key: DB_ADMIN_PASSWORD
+            - name: POSTGRES_DB
+              valueFrom:
+                secretKeyRef:
+                  name: n8n-db-secrets
+                  key: DB_NAME
+            - name: POSTGRES_NON_ROOT_USER
+              valueFrom:
+                secretKeyRef:
+                  name: n8n-db-secrets
+                  key: DB_USER
+            - name: POSTGRES_NON_ROOT_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: n8n-db-secrets
+                  key: DB_PASSWORD
+            - name: POSTGRES_HOST
+              value: postgres
+            - name: POSTGRES_PORT
+              value: '5432'
+      restartPolicy: OnFailure
+      volumes:
+        - name: n8n-db-data
+          persistentVolumeClaim:
+            claimName: n8n-db-data
+        - name: db-secrets
+          secret:
+            secretName: n8n-db-secrets
+        - name: n8n-db-init
+          configMap:
+            name: n8n-db-init
+            defaultMode: 0744
