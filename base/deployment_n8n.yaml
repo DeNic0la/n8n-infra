@@ -71,4 +71,4 @@ spec:
       volumes:
         - name: n8n-data
           persistentVolumeClaim:
-            claimName: n8n-app-data
+            claimName: n8n-data
