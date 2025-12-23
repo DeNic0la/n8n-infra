@@ -3,7 +3,7 @@ kind: PersistentVolumeClaim
 metadata:
   labels:
     service: n8n-app
-  name: n8n-app-data
+  name: n8n-data
 spec:
   accessModes:
     - ReadWriteOnce
