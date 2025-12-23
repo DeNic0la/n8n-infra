@@ -72,6 +72,3 @@ spec:
         - name: n8n-app-data
           persistentVolumeClaim:
             claimName: n8n-app-data
-        - name: db-secrets
-          secret:
-            secretName: n8n-db-secrets

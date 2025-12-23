@@ -34,9 +34,6 @@ spec:
           volumeMounts:
             - name: n8n-db-data
               mountPath: /var/lib/postgresql/data
-            - name: n8n-db-init
-              mountPath: /docker-entrypoint-initdb.d/init-n8n-user.sh
-              subPath: init-data.sh
           env:
             - name: PGDATA
               value: /var/lib/postgresql/data/pgdata
@@ -44,40 +41,19 @@ spec:
               valueFrom:
                 secretKeyRef:
                   name: n8n-db-secrets
-                  key: DB_ADMIN_USER
+                  key: DB_USER
             - name: POSTGRES_PASSWORD
               valueFrom:
                 secretKeyRef:
                   name: n8n-db-secrets
-                  key: DB_ADMIN_PASSWORD
+                  key: DB_PASSWORD
             - name: POSTGRES_DB
               valueFrom:
                 secretKeyRef:
                   name: n8n-db-secrets
                   key: DB_NAME
-            - name: POSTGRES_NON_ROOT_USER
-              valueFrom:
-                secretKeyRef:
-                  name: n8n-db-secrets
-                  key: DB_USER
-            - name: POSTGRES_NON_ROOT_PASSWORD
-              valueFrom:
-                secretKeyRef:
-                  name: n8n-db-secrets
-                  key: DB_PASSWORD
-            - name: POSTGRES_HOST
-              value: postgres
-            - name: POSTGRES_PORT
-              value: '5432'
       restartPolicy: Always
       volumes:
         - name: n8n-db-data
           persistentVolumeClaim:
             claimName: n8n-db-data
-        - name: db-secrets
-          secret:
-            secretName: n8n-db-secrets
-        - name: n8n-db-init
-          configMap:
-            name: n8n-db-init
-            defaultMode: 0744

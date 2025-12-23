@@ -14,8 +14,7 @@
 - **PostgreSQL:**
     - Uses `postgres:11` image.
     - Persistence is handled by a PVC named `n8n-db-data`.
-    - Initialized via a script in `configmap_n8n-db-init.yaml` mounted to `/docker-entrypoint-initdb.d/`.
-    - Credentials and database configuration are managed via `secret_n8n-db-secrets.yaml` and `configmap_n8n-db-init.yaml`.
+    - Credentials and database configuration are managed via `secret_n8n-db-secrets.yaml`.
 - **n8n:**
     - Uses `n8nio/n8n` image.
     - Persistence is handled by a PVC named `n8n-app-data`.

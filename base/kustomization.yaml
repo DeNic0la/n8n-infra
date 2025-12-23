@@ -5,5 +5,4 @@ resources:
   - deployment_postgres.yaml
   - service_postgres.yaml
   - persistentvolumeclaim_n8n-db-data.yaml
-  - configmap_n8n-db-init.yaml
 
